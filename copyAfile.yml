@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: true
+  tasks:
+
+  - name: copy a file to remote host BIACH!!
+    ansible.builtin.copy:
+      src: /home/azureuser/inventory
+      dest: /home/azureuser/inventory
