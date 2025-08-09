@@ -1,0 +1,12 @@
+---
+- hosts: all
+  tasks:
+    - name: Copy configuration files
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode | default('0644') }}" # Optional: set permissions
+      loop:
+        - { src: 'files/app_config.conf', dest: '/etc/myapp/app_config.conf' }
+        - { src: 'files/script.sh', dest: '/usr/local/bin/script.sh', mode: '0755' }
+        - { src: 'files/another_file.txt', dest: '/var/log/another_file.txt' }

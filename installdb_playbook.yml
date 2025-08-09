@@ -1,0 +1,42 @@
+---
+- name: Install Database
+  hosts: db_servers
+  become: yes # Run tasks with elevated privileges
+
+  vars:
+     db_root_password: "yoursecurepassword" # Set a strong password
+     db_name: "my_database"
+     db_user: "mysqluser"
+
+  tasks:
+    - name: Update apt cache (for Debian/Ubuntu)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install database server package (e.g., MySQL)
+      package:
+        name: mysql-server # Or postgresql, sql-server-2022, etc.
+        state: present
+
+    - name: Ensure database service is running and enabled
+      service:
+        name: mysql # Or postgresql, mssql-server, etc.
+        state: started
+        enabled: yes
+
+
+    - name: Create a new MySQL database
+      community.mysql.mysql_db:
+        name: "{{ db_name }}"
+        state: present
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_root_password }}"
+
+    - name: Dump a MySQL database
+      community.mysql.mysql_db:
+        name: "{{ db_name }}"
+        state: dump
+        target: /tmp/my_existing_database_dump.sql
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_root_password }}"
